@@ -1,0 +1,39 @@
+extends layout.pug
+
+
+block buttons
+  a.btn(href='/remnant') Home
+
+mixin countryTitle(key, title, pathPrefix)
+  li
+    h2
+      a.sllnk( href=pathPrefix + key ) #{title.name}
+
+block content
+  .containerCol
+    .container.header
+      div
+        h1 World Atlas
+        hr
+        p.centered.small The lands of this world. Mountains, Rivers, Valleys, Cities and Landmarks.
+    .containerRow
+      .container( style={ width: '55%' } )
+
+
+        h1
+          a.sllnk( href='/remnant/atlas/countries' ) Countries
+        ul
+          each val, key in countries
+            +countryTitle(key, val, '/remnant/atlas/countries/')
+      .container( style={ 'flex-grow': 1 } )
+    .containerRow
+      .container( style={ width: '50%' } )
+        h1 Cities
+        ul
+          each val, key in cities
+            +countryTitle(key, val, '/remnant/atlas/cities/')
+      .container( style={ 'flex-grow': 1 } )
+        h1 Islands
+        ul
+          each val, key in islands
+            +countryTitle(key, val, '/remnant/atlas/islands/')

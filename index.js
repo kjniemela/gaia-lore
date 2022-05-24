@@ -1,12 +1,40 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-const port = 3001;
-
 const path = require('path');
-app.use(bodyParser.json());
-app.use('/gaia', express.static(path.join(__dirname, 'dist/')));
+const bodyParser = require('body-parser');
+// const favicon = require('serve-favicon');
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+const PORT = 3002;
+const ADDR_PREFIX = '/remnant';
+
+const app = express();
+app.use(bodyParser.json());
+
+// load routes
+const atlasRoutes = require('./routes/atlas')
+const encyclopediaRoutes = require('./routes/encyclopedia')
+
+// load templates
+const { homeTemplate, errorTemplate } = require('./templates');
+
+// static files
+// app.use(favicon(path.join(__dirname, 'assets/favicon.ico')));
+app.use(`${ADDR_PREFIX}/archive`, express.static(path.join(__dirname, 'archive/')));
+app.use(`${ADDR_PREFIX}/assets`, express.static(path.join(__dirname, 'assets/')));
+
+app.get(`${ADDR_PREFIX}/`, (req, res) => {
+  const html = homeTemplate();
+  res.end(html);
+});
+
+app.use(`${ADDR_PREFIX}/atlas`, atlasRoutes);
+app.use(`${ADDR_PREFIX}/encyclopedia`, encyclopediaRoutes);
+
+// 404 errors
+app.use((req, res) => {
+  res.status(404);
+  res.end(errorTemplate({ code: 404 }));
+});
+
+app.listen(PORT, () => {
+  console.log(`Example app listening at http://localhost:${PORT}`);
 });
